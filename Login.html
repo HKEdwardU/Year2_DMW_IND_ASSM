@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE-edge">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <title>Computer Builder</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f2f2f2;
+            }
+            header {
+                background-color: gainsboro;
+                color: gray;
+                padding: 20px;
+                text-align: center;
+            }
+            header ul{
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            header li{
+                display: inline-block;
+                margin: 0 10px;
+            }
+            header a {
+                color: #242424;
+                text-decoration: none;
+                padding: 5px;
+                border-radius: 5px;
+            }
+            header a:hover {
+                background-color: #fff;
+                color: #333;
+            }
+            section {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                padding: 20px;
+            }
+            article {
+                background-color: #fff;
+                padding: 20px;
+                margin: 10px;
+                border-radius: 5px;
+                box-shadow: 2px 2px 5px #888;
+                flex: 1 0 30%;
+            }
+            article h2 {
+                font-size: 20px;
+                margin: 0 0 10px;
+            }
+            article p {
+                font-size: 16px;
+                margin: 0;
+            }
+            article img {
+                width: 90%;
+                margin-bottom: 10px;
+            }
+            footer {
+                background-color: #333;
+                color: #fff;
+                padding: 20px;
+                text-align: center;
+            }
+            footer ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            footer li {
+                display: inline-block;
+                margin: 0 10px;
+            }
+            footer a {
+                color: #fff;
+                text-decoration: none;
+                padding: 5px;
+                border-radius: 5px;
+            }
+            footer a:hover {
+                background-color: #fff;
+                color: #333;
+            }
+            #Option {
+                position: absolute;
+                right: 5px;
+                top: 20px;
+                width: 80px;
+                height: 80px;
+            }
+            #Homepage {
+                position: absolute;
+                right: 5px;
+                top: 20px;
+                width: 100px;
+                height: 80px;
+            }
+        </style>
+    </head>
+        <body>
+            <header>
+                <button id="HomePage" onclick="window.location.href='http://127.0.0.1:8000'" style="display: flex; align-items: center; justify-content: center;">
+                    <img
+                    src="https://i.ibb.co/c6R5HQP/Logo-removebg-preview.png"
+                    width="100px"
+                    height="80px"
+                    style="position:relative"
+                    align="left">
+                </button>
+                <button id="Option" onclick="toggleList()" style="display: flex; align-items: center; justify-content: center;" class="btn btn-info">
+                <img
+                src="https://i.ibb.co/1RwQvJC/Option.png"
+                width="80px"
+                height="80px"
+                style="vertical-align:middle;"
+                >
+                </button>
+                <H1>
+                    <b>Hello {{name}}, Wellcome to Computer Builder!</b>
+                </H1>
+                <br>
+                <ul id="My_List" style="display: none;"><b>
+                    <Li><a href="http://127.0.0.1:8000/Sign_Up">Sign Up</a></Li>
+                    <Li><a href="http://127.0.0.1:8000/Login">Login</a></Li>
+                    <li><a href="http://127.0.0.1:8000/Q&A">Q&A</a></li>
+                </ul></b>
+            </header>
+
+            <section>
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="name">Your Name:</label>
+                        <input type="text" id="name" name="name" class="from-control" required><br>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" class="from-control" required><br>
+                    </div>
+                    <div class="form-group"></div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <label id="SignIn-message" class="text-success">{{SignInM}}</label>
+                    </div>
+                </form>
+            </section>
+            
+            <footer>
+                <ul>
+                    <li>Free Local Shipping</li>
+                    <li>Fully Refund within a Week</li>
+                    <li>Authentic Guarantee</li>
+                    <li>Website Bug Report</li>
+                    <li>Media</li>
+                </ul>
+                <p>
+        
+                </p>
+                <p>Computer Builder © 2023</p>
+            </footer>
+
+        </body>
+
+        <script>
+
+            function toggleList() {
+                var myList = document.getElementById("My_List");
+                if ( myList.style.display === "none") {
+                    myList.style.display = "block";
+                } else {
+                    myList.style.display = "none";
+                }
+            }
+    
+        </script>
+        </html>

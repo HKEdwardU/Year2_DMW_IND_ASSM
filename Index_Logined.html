@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <title>Computer Builder</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: #f2f2f2;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            header {
+                background-color: gainsboro;
+                color: gray;
+                padding: 20px;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            header ul{
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            header li{
+                display: inline-block;
+                margin: 0 10px;
+            }
+            header a {
+                color: #242424;
+                text-decoration: none;
+                padding: 5px;
+                border-radius: 5px;
+            }
+            header a:hover {
+                background-color: #fff;
+                color: #333;
+            }
+            nav {
+                background-image: url('https://edtechmagazine.com/k12/sites/edtechmagazine.com.k12/files/styles/hero_carousel_item/public/2021-11/EdTechQ221-Esports-landingpage_Landing-Anchor.jpg?itok=EIZ-l4l_');
+                background-repeat: no-repeat;
+                background-size: 100% 180%;
+                height: 300px;
+                right: 30px;
+                color: #fff;
+                padding: 10px;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            section {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                padding: 20px;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            article {
+                background-color: #fff;
+                padding: 20px;
+                margin: 10px;
+                border-radius: 5px;
+                box-shadow: 2px 2px 5px #888;
+                flex: 1 0 30%;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            article h2 {
+                font-size: 20px;
+                margin: 0 0 10px;
+            }
+            article p {
+                font-size: 16px;
+                margin: 0;
+            }
+            article img {
+                width: 90%;
+                margin-bottom: 10px;
+            }
+            footer {
+                background-color: #333;
+                color: #fff;
+                padding: 20px;
+                text-align: center;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+            }
+            footer ul {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+            footer li {
+                display: inline-block;
+                margin: 0 10px;
+            }
+            footer a {
+                color: #fff;
+                text-decoration: none;
+                padding: 5px;
+                border-radius: 5px;
+            }
+            footer a:hover {
+                background-color: #fff;
+                color: #333;
+            }
+            #Option {
+                position: absolute;
+                right: 5px;
+                top: 20px;
+                width: 80px;
+                height: 80px;
+            }
+            #Homepage {
+                position: absolute;
+                right: 5px;
+                top: 20px;
+                width: 100px;
+                height: 80px;
+            }
+        </style>
+    </head>
+    <body onload="fadeIn()">
+        <header>
+            <button id="HomePage" onclick="window.location.href='http://127.0.0.1:8000'" style="display: flex; align-items: center; justify-content: center;">
+            <img
+            src="https://i.ibb.co/c6R5HQP/Logo-removebg-preview.png"
+            width="100px"
+            height="80px"
+            style="position:relative"
+            align="left">
+            </button>
+            <button id="Option" onclick="toggleList()" style="display: flex; align-items: center; justify-content: center;" class="btn btn-info">
+            <img
+            src="https://i.ibb.co/1RwQvJC/Option.png"
+            width="80px"
+            height="80px"
+            style="vertical-align:middle;"
+            >
+            </button>
+            <H1>
+                <b>Hello {{name}}, Wellcome to Computer Builder!</b>
+            </H1>
+            <br>
+            <p class="text-success"><b>{{POPMessage}}</b></p>
+            <br>
+            <ul id="My_List" style="display: none;"><b>
+                <li><a href="http://127.0.0.1:8000/Cart">Cart List</a></li>
+                <li><a href="http://127.0.0.1:8000/OrderList">Order Record</a></li>
+                <li><a href="http://127.0.0.1:8000/Change_PW">Change Password</a></li>
+                <li><a href="http://127.0.0.1:8000/Logout">Logout</a></li>
+                <li><a href="http://127.0.0.1:8000/Q&A">Q&A</a></li>
+            </ul></b>
+        </header>
+        <nav>
+            <h2 align="left">Find the parts and build your own PC!</h2>
+        </nav>
+        <section>
+            <article>
+                <img src="https://i.ibb.co/gS7KJXV/RTX-4090-MSI.jpg" alt="Product Image">
+                <h2><b>MSI RTX 4090</b></h2>
+                <p class="text-info">The NVIDIA GeForce RTX 4090 is the ultimate GeForce GPU. It brings an enormous leap in performance, efficiency,
+                     and AI-powered graphics. Experience ultra-high performance gaming, incredibly detailed virtual worlds with ray
+                      tracing, unprecedented productivity, and new ways to create.</p>
+                <p>HK$15800</p>
+                <form action="/add_to_cart" method="post">
+                    <input type="hidden" name="product_id" value="3">
+                    <button type="submit">Add to the cart</button>
+                </form>
+            </article>
+            <article>
+                <img src="https://i.ibb.co/558NG0h/Intel-i7-13700-K.jpg" alt="Product Image">
+                <h2><b>Intel i7 13700K</b></h2>
+                <p class="text-info">With 30MB of cache and a 5.4 GHz Turbo Boost Max 3.0 frequency, this processor is made to handle intense workloads.
+                     You can also overclock this processor for even greater performance. The Core i7-13700K also supports PCI Express
+                      5.0 and dual-channel DDR5 ECC memory at 5600 MHz.</p>
+                <p>HK$3550</p>
+                <form action="/add_to_cart" method="post">
+                    <input type="hidden" name="product_id" value="2">
+                    <button type="submit">Add to the cart</button>
+                </form>
+            </article>
+            <article>
+                <img src="https://i.ibb.co/wRHPdgj/AMD-Ryzen.jpg" alt="Product Image">
+                <h2><b>AMD Ryzen 7 5800X</b></h2>
+                <p class="text-info">The AMD Ryzen 7 5800X processor is optimized for gaming: 8 Cores, 16 Threads and 36MB GameCache. Not to mention the
+                     native and boosted frequencies that allow you to enjoy your favorite games in the best conditions. Combine it with
+                      a high-performance graphics card and you'll be able to play any game smoothly.</p>
+                <p>hk$2000</p>
+                <form action="/add_to_cart" method="post">
+                    <input type="hidden" name="product_id" value="4">
+                    <button type="submit">Add to the cart</button>
+                </form>
+            </article>
+        </section>
+        <section>
+            <article>
+                <img src="https://i.ibb.co/CzQqGTq/Intel-Arc-A770.jpg" alt="Product Image">
+                <h2><b>Inter Arc A770</b></h2>
+                <p class="text-info">The Arc A770 is a performance-segment graphics card by Intel, launched on October 12th, 2022. Built on the 6 nm process,
+                     and based on the DG2-512 graphics processor, in its ACM-G10 variant, the card supports DirectX 12 Ultimate.</p>
+                <p>HK$3888</p>
+                <form action="/add_to_cart" method="post">
+                    <input type="hidden" name="product_id" value="1">
+                    <button type="submit">Add to the cart</button>
+                </form>
+            </article>
+            <article>
+                <img src="https://i.ibb.co/whnt5tB/RTX-3060-Ti-GIGABYTE.jpg" alt="Product Image">
+                <h2><b>GIGABYTE RTX 3060TI</b></h2>
+                <p class="text-info">The Nvidia GeForce RTX 3060 Ti is a fast desktop graphics card based on the Ampere architecture. It uses the big GA104
+                     chip and offers 4,864 cores and 8 GB GDDR6 graphics memory. The performance in games and 4k resolution is slightly
+                      above a desktop RTX 2080 Super.</p>
+                <p>HK$3799</p>
+                <form action="/add_to_cart" method="post">
+                    <input type="hidden" name="product_id" value="5">
+                    <button type="submit">Add to the cart</button>
+                </form>
+            </article>
+            <article>
+                <img src="https://i.ibb.co/fd13SMH/MSI-MPG-Z790-CARBON-WIFI.webp" alt="Product Image">
+                <h2>MSI MPG Z790 CARBON WIFI</h2>
+                <p class="text-info">The MPG series brings out fashionable products by showing extremely unique styles and expressing a conceited attitude
+                     towards the challenge of the gaming world. With extraordinary performance and style, the MPG series defines the future
+                      of gaming fashion.</p>
+                <p>HK$3180</p>
+                <form action="/add_to_cart" method="post">
+                    <input type="hidden" name="product_id" value="6">
+                    <button type="submit">Add to the cart</button>
+                </form>
+            </article>
+        </section>
+        <footer>
+        <ul>
+            <li>Free Local Shipping</li>
+            <li>Fully Refund within a Week</li>
+            <li>Authentic Guarantee</li>
+            <li>Website Bug Report</li>
+            <li>Media</li>
+        </ul>
+        <p>
+
+        </p>
+        <p>Computer Builder © 2023</p>
+        </footer>
+
+    </body>
+
+    <script>
+        function toggleList() {
+            var myList = document.getElementById("My_List");
+            if ( myList.style.display === "none") {
+                myList.style.display = "block";
+            } else {
+                myList.style.display = "none";
+            }
+        }
+
+        function fadeIn() {
+			document.body.style.opacity = "1";
+			setTimeout(function() {
+				document.getElementsByTagName("header")[0].style.opacity = "1";
+			}, 1000);
+            setTimeout(function() {
+				document.getElementsByTagName("nav")[0].style.opacity = "1";
+			}, 1000);
+            setTimeout(function() {
+				document.getElementsByTagName("section")[0].style.opacity = "1";
+			}, 2000);
+            setTimeout(function() {
+				document.getElementsByTagName("article")[0].style.opacity = "1";
+			}, 1000);
+            setTimeout(function() {
+				document.getElementsByTagName("article")[1].style.opacity = "1";
+			}, 2000);
+            setTimeout(function() {
+				document.getElementsByTagName("article")[2].style.opacity = "1";
+			}, 3000);
+            setTimeout(function() {
+				document.getElementsByTagName("section")[1].style.opacity = "1";
+			}, 3000);
+            setTimeout(function() {
+				document.getElementsByTagName("article")[3].style.opacity = "1";
+			}, 1000);
+            setTimeout(function() {
+				document.getElementsByTagName("article")[4].style.opacity = "1";
+			}, 2000);
+            setTimeout(function() {
+				document.getElementsByTagName("article")[5].style.opacity = "1";
+			}, 3000);
+            setTimeout(function() {
+				document.getElementsByTagName("footer")[0].style.opacity = "1";
+			}, 4000);
+        }
+    </script>
+
+</html>
