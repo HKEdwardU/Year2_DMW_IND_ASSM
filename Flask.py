@@ -1,6 +1,8 @@
 #!/hkedwardu/205CDE/bin/python
 from flask import Flask, render_template, request, redirect, session
 from tabulate import tabulate
+from email_validator import validate_email, EmailNotValidError
+import threading
 import params
 import pymysql
 
@@ -10,6 +12,7 @@ app.secret_key = 'ABCDE'
 db = pymysql.connect(host="localhost", user="newuser", password="password", database="website_db")
 
 newuser = "New Comer"
+lock = threading.Lock()
 
 @app.route('/')
 def index():
@@ -50,7 +53,7 @@ def SignUp():
         UserPhNum = request.form['phone']
         UserAddr = request.form['address']
         SignUpmessage = ''
-        
+
         try:
             valid = validate_email(userEmail)
         except ValueError as e:
@@ -167,7 +170,7 @@ def Cart():
 @app.route('/Clear_Cart', methods=['POST'])
 def Clear_Cart():
     mycursor = db.cursor()
-    sql = "DELETE FROM cart WHERE C_ID=%s"
+    sql = "DELETE FROM cart WHERE C_ID = %s"
     val = session['user_CID']
     mycursor.execute(sql, val)
     db.commit()
@@ -180,28 +183,43 @@ def Payment():
     mycursor = db.cursor()
     sql = "SELECT SUM(Price) FROM cart WHERE C_ID = %s"
     val = session['user_CID']
+    lock.acquire()
     mycursor.execute(sql, val)
+    lock.release()
     Total_Fee = None
-    PM_Ture = None
+    session['PM_ID'] = None
+    PM_Ture = str('')
     for row in mycursor:
         Total_Fee = row[0]
 
     if request.method == 'POST':
+        if Total_Fee == None:
+            return render_template('Total_None.html', name = session['username'])
         PM_Code_Py = request.form['PM_Code']
-        sql = "SELECT PM_Discount_Value FROM promotion_list WHERE PM_CODE = %s"
-        val = PM_Code_Py
-        mycursor.execute(sql, val)
-        myresult = mycursor.fetchone()
-        
-        # If promote code is found
-        if myresult:
-                PM_Ture = myresult[0]
+        if PM_Code_Py != '':
+            sql = "SELECT PM_Discount_Value FROM promotion_list WHERE PM_CODE = %s"
+            val = PM_Code_Py
+            lock.acquire()
+            mycursor.execute(sql, val)
+            lock.release()
+            myresult = mycursor.fetchone()
+            # If promote code is found
+            if myresult:
+                PM_Value = myresult[0]
+                Total_Fee -= PM_Value
+                PM_Ture = str('Success! You get discount!')
+                sql = "SELECT PM_ID FROM promotion_list WHERE PM_CODE = %s"
+                val = PM_Code_Py
+                lock.acquire()
+                mycursor.execute(sql, val)
+                lock.release()
+                myresult = mycursor.fetchone()
+                if myresult:
+                    session['PM_ID'] = myresult
+        else:
+            PM_Ture = str('')
+            session['PM_ID'] = None
 
-    if Total_Fee is not None and PM_Ture is not None:
-        Total_Fee -= PM_Ture
-        PM_Ture = str('Success! You get discount!')
-    else:
-        PM_Ture = str('')
 
     return render_template('Sell.html', name = session['username'], Payment = Total_Fee, PM_Ture = PM_Ture)
 
@@ -211,25 +229,33 @@ def Complete():
     Product_Num = None
     val = session['user_CID']
     sql = "SELECT COUNT(C_ID) FROM cart WHERE C_ID = %s"
+    lock.acquire()
     mycursor.execute(sql, val)
+    lock.release()
     myresult = mycursor.fetchone()
     Product_Num = myresult[0]
     for x in range(Product_Num):
         sql = "SELECT C_ID,P_ID,P_Quantity,Price FROM cart WHERE C_ID = %s"
         val = session['user_CID']
+        lock.acquire()
         mycursor.execute(sql, val)
+        lock.release()
         for row in mycursor:
             Cart_C_ID = row[0]
             Cart_P_ID = row[1]
             Cart_P_Quan = row[2]
             Cart_price = row[3]
-        sql = "INSERT INTO order_list (C_ID, P_ID, P_Quantity, Price) VALUES ( %s, %s, %s, %s)"
-        val = (Cart_C_ID, Cart_P_ID, Cart_P_Quan, Cart_price)
+        sql = "INSERT INTO order_list (C_ID, P_ID, P_Quantity, PM_ID, Price) VALUES ( %s, %s, %s, %s, %s)"
+        val = (Cart_C_ID, Cart_P_ID, Cart_P_Quan, session['PM_ID'], Cart_price)
+        lock.acquire()
         mycursor.execute(sql, val)
+        lock.release()
         db.commit()
         sql = "DELETE FROM cart WHERE C_ID=%s"
         val = (Cart_C_ID)
+        lock.acquire()
         mycursor.execute(sql, val)
+        lock.release()
         db.commit()
 
     return render_template('Complete.html', name = session['username'])
@@ -241,12 +267,17 @@ def OrderList():
     val = session['user_CID']
     mycursor.execute(sql, val)
     HISTArray = []
+    row = None
     for row in mycursor:
         HISTArray.append(row)
 
+    EmptyMessage = ''
+    if row == 0:
+        EmptyMessage = "You never buy a product from us!"
+
     HISTTable = tabulate(HISTArray, headers = ['Product Name', 'Quantity', 'Price(HK$)', 'Date'], tablefmt='html')
 
-    return render_template('Order_List.html', name = session['username'], HISTTable = HISTTable)
+    return render_template('Order_List.html', name = session['username'], HISTTable = HISTTable, Empty = EmptyMessage)
 
 @app.route('/Logout')
 def Logout():
