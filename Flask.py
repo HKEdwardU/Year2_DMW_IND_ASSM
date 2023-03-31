@@ -51,6 +51,12 @@ def SignUp():
         UserPhNum = request.form['phone']
         UserAddr = request.form['address']
         SignUpmessage = ''
+        
+        try:
+            valid = validate_email(userEmail)
+        except ValueError as e:
+            SignUpmessage = 'Unvalid Email address, please enter again.'
+            return render_template('Sign_Up.html', name = newuser, SignUpmessage = SignUpmessage)
 
         # Add them into the 'customers' table
         mycursor = db.cursor()
