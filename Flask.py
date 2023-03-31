@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, session
 from tabulate import tabulate
 import params
 import pymysql
-import time
 
 app = Flask(__name__)
 app.secret_key = 'ABCDE'
