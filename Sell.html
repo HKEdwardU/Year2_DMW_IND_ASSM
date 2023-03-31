@@ -148,17 +148,18 @@
             <section>
                 <form method="POST">
                     <label for="card-number">Card Number:</label>
-                    <input type="text" id="card-number" name="card-number" required><br>
+                    <input type="text" required><br>
 
                     <label for="valid-date">Vaild Date:</label>
-                    <input type="text" id="valid-date" name="valid-date" placeholder="MM/YY" required><br>
+                    <input type="text" placeholder="MM/YY" required><br>
 
                     <label for="cvc">CVC:</label>
-                    <input type="text" id="cvc" name="cvc" required><br>
+                    <input type="text" required><br>
 
                     <label for="card-owner">Card Owner Name:</label>
-                    <input type="text" id="card-owner" name="card-owner" required><br>
+                    <input type="text" required><br>
 
+                    <input type="hidden" name="PM_Code" value="">
                     <input type="submit" value="Set Payment" onclick="window.location.href='http://127.0.0.1:8000/Complete'">
                 </form>
                 <form method="POST">

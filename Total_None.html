@@ -106,72 +106,71 @@
                 height: 80px;
             }
         </style>
-    </head>
-    <body>
+        </head>
+        <body>
 
-        <header>
-            <button id="HomePage" onclick="window.location.href='http://127.0.0.1:8000'" style="display: flex; align-items: center; justify-content: center;">
+            <header>
+                <button id="HomePage" onclick="window.location.href='http://127.0.0.1:8000'" style="display: flex; align-items: center; justify-content: center;">
+                    <img
+                    src="https://i.ibb.co/c6R5HQP/Logo-removebg-preview.png"
+                    width="100px"
+                    height="80px"
+                    style="position:relative"
+                    align="left">
+                </button>
+                <button id="Option" onclick="toggleList()" style="display: flex; align-items: center; justify-content: center;" class="btn btn-info">
                 <img
-                src="https://i.ibb.co/c6R5HQP/Logo-removebg-preview.png"
-                width="100px"
+                src="https://i.ibb.co/1RwQvJC/Option.png"
+                width="80px"
                 height="80px"
-                style="position:relative"
-                align="left">
-            </button>
-            <button id="Option" onclick="toggleList()" style="display: flex; align-items: center; justify-content: center;" class="btn btn-info">
-            <img
-            src="https://i.ibb.co/1RwQvJC/Option.png"
-            width="80px"
-            height="80px"
-            style="vertical-align:middle;"
-            >
-            </button>
-            <H1>
-                <b>Hello {{name}}, Wellcome to Computer Builder!</b>
-            </H1>
-            <br>
-            <ul id="My_List" style="display: none;"><b>
-                <li><a href="http://127.0.0.1:8000/Cart">Cart List</a></li>
-                <li><a href="http://127.0.0.1:8000/OrderList">Order Record</a></li>
-                <li><a href="http://127.0.0.1:8000/Change_PW">Change Password</a></li>
-                <li><a href="http://127.0.0.1:8000/Logout">Logout</a></li>
-                <li><a href="http://127.0.0.1:8000/Q&A">Q&A</a></li>
-            </ul></b>
-        </header>
-        <h2><b>Your order history:</b></h2> 
-        <section>
-            <article>
-                {{ HISTTable | safe }}
-                {{Empty}}
-            </article>
-        </section>
+                style="vertical-align:middle;"
+                >
+                </button>
+                <H1>
+                    <b>Hello {{name}}, Wellcome to Computer Builder!</b>
+                </H1>
+                <br>
+                <ul id="My_List" style="display: none;"><b>
+                    <li><a href="http://127.0.0.1:8000/Cart">Cart List</a></li>
+                    <li><a href="http://127.0.0.1:8000/OrderList">Order Record</a></li>
+                    <li><a href="http://127.0.0.1:8000/Change_PW">Change Password</a></li>
+                    <li><a href="http://127.0.0.1:8000/Logout">Logout</a></li>
+                    <li><a href="http://127.0.0.1:8000/Q&A">Q&A</a></li>
+                </ul></b>
+            </header>
 
-        <footer>
-            <ul>
-                <li>Free Local Shipping</li>
-                <li>Fully Refund within a Week</li>
-                <li>Authentic Guarantee</li>
-                <li>Website Bug Report</li>
-                <li>Media</li>
-            </ul>
-            <p>
-    
-            </p>
-            <p>Computer Builder © 2023</p>
-        </footer>
+            <section>
+                <article>
+                    <H2>Payment unsuccess! you have no product in your cart!</H2>
+                    <br>
+                    <input type="submit" value="Go to Home page" onclick="window.location.href='http://127.0.0.1:8000'"
+                </article>
+            </section>
 
-    </body>
+            <footer>
+                <ul>
+                    <li>Free Local Shipping</li>
+                    <li>Fully Refund within a Week</li>
+                    <li>Authentic Guarantee</li>
+                    <li>Website Bug Report</li>
+                    <li>Media</li>
+                </ul>
+                <p>
+        
+                </p>
+                <p>Computer Builder © 2023</p>
+            </footer>
 
-    <script>
+        <script>
 
-        function toggleList() {
-            var myList = document.getElementById("My_List");
-            if ( myList.style.display === "none") {
-                myList.style.display = "block";
-            } else {
-                myList.style.display = "none";
+            function toggleList() {
+                var myList = document.getElementById("My_List");
+                if ( myList.style.display === "none") {
+                    myList.style.display = "block";
+                } else {
+                    myList.style.display = "none";
+                }
             }
-        }
-
-    </script>
-    </html>
+    
+        </script>
+        </html>
