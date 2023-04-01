@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, session
 from tabulate import tabulate
 from email_validator import validate_email, EmailNotValidError
 import threading
-import params
 import pymysql
 
 app = Flask(__name__)
