@@ -19,7 +19,14 @@
                 background-color: gainsboro;
                 color: gray;
                 padding: 20px;
+                height: 200px;
                 text-align: center;
+                position: relative;
+                transition: height 0.8s ease-in-out;
+            }
+            header.expanded {
+                height: 240px;
+                transition: height 0.2s ease-in-out;
             }
             header ul{
                 list-style: none;
@@ -129,7 +136,7 @@
                     <b>Hello {{name}}, Wellcome to Computer Builder!</b>
                 </H1>
                 <br>
-                <ul id="My_List" style="display: none;"><b>
+                <ul id="My_List" style="opacity: 0;transition: opacity 0.4s ease-in-out;"><b>
                     <Li><a href="http://127.0.0.1:8000/Sign_Up">Sign Up</a></Li>
                     <Li><a href="http://127.0.0.1:8000/Login">Login</a></Li>
                     <li><a href="http://127.0.0.1:8000/Q&A">Q&A</a></li>
@@ -189,10 +196,13 @@
 
             function toggleList() {
                 var myList = document.getElementById("My_List");
-                if ( myList.style.display === "none") {
-                    myList.style.display = "block";
+                var header = document.getElementsByTagName("header")[0];
+                if ( myList.style.opacity == "0" ) {
+                    header.classList.toggle('expanded');
+                    myList.style.opacity = "1";
                 } else {
-                    myList.style.display = "none";
+                    header.classList.remove('expanded');
+                    myList.style.opacity = "0";
                 }
             }
 

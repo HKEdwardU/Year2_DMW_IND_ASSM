@@ -19,7 +19,14 @@
                 background-color: gainsboro;
                 color: gray;
                 padding: 20px;
+                height: 210px;
                 text-align: center;
+                position: relative;
+                transition: height 0.8s ease-in-out;
+            }
+            header.expanded {
+                height: 250px;
+                transition: height 0.2s ease-in-out;
             }
             header ul{
                 list-style: none;
@@ -141,7 +148,8 @@
                     <b>Hello {{name}}, Wellcome to Computer Builder!</b>
                 </H1>
                 <br>
-                <ul id="My_List" style="display: none;"><b>
+                <br>
+                <ul id="My_List" style="opacity: 0;transition: opacity 0.4s ease-in-out;"><b>
                     <li><a href="http://127.0.0.1:8000/Cart">Cart List</a></li>
                     <li><a href="http://127.0.0.1:8000/OrderList">Order Record</a></li>
                     <li><a href="http://127.0.0.1:8000/Change_PW">Change Password</a></li>
@@ -152,13 +160,17 @@
             <h2><b>Your shopping Cart:</b></h2> 
             <section>
                 <article>
+                    {{ ProductN_Table | safe }}
+                </article>
+                <article>
                     {{ CartTable | safe }}
-                    {{Empty}}
                 </article>
             </section>
             <section>
                 <article>
                     <h2 id="Cost">Total Cost: HK${{Cost}}</h2>
+                    <br>
+                    <p style="position: absolute;"> {{Empty}} </p>
                     <form id="Clear_Cart" action="/Clear_Cart" method="post">
                         <button id="Clear_Cart" type="submit" style="padding: 10px;margin-top: 10px;" class="btn btn-danger"><b>Clear Cart</b></button>
                     </form>
@@ -180,14 +192,18 @@
                 <p>Computer Builder © 2023</p>
             </footer>
 
+        </body>
         <script>
 
             function toggleList() {
                 var myList = document.getElementById("My_List");
-                if ( myList.style.display === "none") {
-                    myList.style.display = "block";
+                var header = document.getElementsByTagName("header")[0];
+                if ( myList.style.opacity == "0" ) {
+                    header.classList.toggle('expanded');
+                    myList.style.opacity = "1";
                 } else {
-                    myList.style.display = "none";
+                    header.classList.remove('expanded');
+                    myList.style.opacity = "0";
                 }
             }
             

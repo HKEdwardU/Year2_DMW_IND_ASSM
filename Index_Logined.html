@@ -21,9 +21,15 @@
                 background-color: gainsboro;
                 color: gray;
                 padding: 20px;
+                height: 210px;
                 text-align: center;
+                position: relative;
                 opacity: 0;
-                transition: opacity 1s ease-in-out;
+                transition: opacity 0.6s ease-in-out,height 0.8s ease-in-out;
+            }
+            header.expanded {
+                height: 250px;
+                transition: height 0.2s ease-in-out;
             }
             header ul{
                 list-style: none;
@@ -150,10 +156,9 @@
             <H1>
                 <b>Hello {{name}}, Wellcome to Computer Builder!</b>
             </H1>
-            <br>
             <p class="text-success"><b>{{POPMessage}}</b></p>
             <br>
-            <ul id="My_List" style="display: none;"><b>
+            <ul id="My_List" style="opacity: 0;transition: opacity 0.4s ease-in-out;"><b>
                 <li><a href="http://127.0.0.1:8000/Cart">Cart List</a></li>
                 <li><a href="http://127.0.0.1:8000/OrderList">Order Record</a></li>
                 <li><a href="http://127.0.0.1:8000/Change_PW">Change Password</a></li>
@@ -195,7 +200,7 @@
                 <p class="text-info">The AMD Ryzen 7 5800X processor is optimized for gaming: 8 Cores, 16 Threads and 36MB GameCache. Not to mention the
                      native and boosted frequencies that allow you to enjoy your favorite games in the best conditions. Combine it with
                       a high-performance graphics card and you'll be able to play any game smoothly.</p>
-                <p>hk$2000</p>
+                <p>HK$2000</p>
                 <form action="/add_to_cart" method="post">
                     <input type="hidden" name="product_id" value="4">
                     <button type="submit">Add to the cart</button>
@@ -256,12 +261,16 @@
     </body>
 
     <script>
+        
         function toggleList() {
             var myList = document.getElementById("My_List");
-            if ( myList.style.display === "none") {
-                myList.style.display = "block";
+            var header = document.getElementsByTagName("header")[0];
+            if ( myList.style.opacity == "0" ) {
+                header.classList.toggle('expanded');
+                myList.style.opacity = "1";
             } else {
-                myList.style.display = "none";
+                header.classList.remove('expanded');
+                myList.style.opacity = "0";
             }
         }
 
