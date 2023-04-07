@@ -8,8 +8,10 @@ import pymysql
 app = Flask(__name__)
 app.secret_key = 'ABCDE'
 
+# connect to the database
 db = pymysql.connect(host="localhost", user="newuser", password="password", database="website_db")
 
+# name for new user
 newuser = "New Comer"
 lock = threading.Lock()
 
@@ -54,8 +56,8 @@ def SignUp():
         SignUpmessage = ''
 
         try:
-            valid = validate_email(userEmail)
-        except ValueError as e:
+            valid = validate_email(userEmail) # Validating the email address
+        except ValueError as e: # if the email is not valid
             SignUpmessage = 'Unvalid Email address, please enter again.'
             return render_template('Sign_Up.html', name = newuser, SignUpmessage = SignUpmessage)
 
@@ -65,7 +67,7 @@ def SignUp():
         val = (username, userEmail, password, gender, UserPhNum, UserAddr)
         mycursor.execute(sql, val)
 
-        try:
+        try: # Add users name and password to the 'login' table
             db.commit()
             sql = "INSERT INTO login (C_ID, C_NAME, C_Password) VALUES ( %s, %s, %s)"
             val = (mycursor.lastrowid, username, password)
@@ -73,7 +75,7 @@ def SignUp():
             db.commit()
             SignUpmessage = 'Sign Up success, wellcome to our store! Please login again!'
             return render_template('Sign_Up.html', name = username, SignUpmessage = SignUpmessage)
-        except:
+        except: # if user enter their information incorrect
             db.rollback()
             SignUpmessage = 'Sign Up unsuccess, please enter the infomation again!'
             return render_template('Sign_Up.html', name = newuser, SignUpmessage = SignUpmessage)
@@ -82,7 +84,7 @@ def SignUp():
 
 @app.route('/Login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    if request.method == 'POST': # Get users name and password
         username = request.form['name']
         password = request.form['password']
         user_CID = ''
@@ -113,51 +115,54 @@ def login():
 
 @app.route('/Change_PW', methods=['GET', 'POST'])
 def Change_PW():
-    if request.method == 'POST':
+    if request.method == 'POST': #Get users old password and new password
         Old_Password = request.form['Old_password']
         New_Password = request.form['New_password']
         Confirm_Password = request.form['confirm_password']
         
-        if New_Password != Confirm_Password:
+        if New_Password != Confirm_Password: # test if user accidentally entered the wrong new password
             ChangePWM = 'You enter different new password, enter again'
             return render_template('Change_PW.html', name = session['username'], ChangePWM = ChangePWM)
 
-        mycursor = db.cursor()
+        mycursor = db.cursor() # find the old password in the 'login' table
         sql = "SELECT C_Password FROM login WHERE C_ID = %s"
         val = (session['user_CID'])
         mycursor.execute(sql, val)
         for row in mycursor:
             OldPW = row[0]
-        if Old_Password != OldPW:
+        if Old_Password != OldPW: # test if user enter the wrong old password
             ChangePWM = 'You enter worng old password, enter again'
             return render_template('Change_PW.html', name = session['username'], ChangePWM = ChangePWM)
-        else:
+        else: # update the old password with new one after validation
             sql = "UPDATE login SET C_Password = %s WHERE C_ID = %s"
             val = (New_Password, session['user_CID'])
             mycursor.execute(sql, val)
             db.commit()
+            sql = "UPDATE customers SET C_Password = %s WHERE C_ID = %s"
+            mycursor.execute(sql, val)
+            db.commit()
             ChangePWM = 'Change password success! Please login again!'
-            session.pop('username',None)
+            session.pop('username',None) # user get logout and need to login again
             return render_template('Change_PW.html', name = newuser, ChangePWM = ChangePWM)
 
     return render_template('Change_PW.html', name = session['username'])
 
 @app.route('/Cart')
-def Cart():
+def Cart(): # to show all the products in users cart
     mycursor = db.cursor()
     val = session['user_CID']
-    sql = "SELECT SUM(Price) FROM cart WHERE C_ID = %s"
+    sql = "SELECT SUM(Price) FROM cart WHERE C_ID = %s" # get the total cost
     mycursor.execute(sql, val)
     for row in mycursor:
         Cost = row[0]
 
-    sql = "SELECT P_ID FROM cart WHERE C_ID = %s"
+    sql = "SELECT P_ID FROM cart WHERE C_ID = %s" # get the product's ID list
     mycursor.execute(sql, val)
     ProductID = []
     for row in mycursor:
         ProductID.append(row)
     
-    sql = "SELECT P_Quantity,Price FROM cart WHERE C_ID = %s"
+    sql = "SELECT P_Quantity,Price FROM cart WHERE C_ID = %s" # get the product's number and price
     mycursor.execute(sql, val)
     cartArray = []
     for row in mycursor:
@@ -165,7 +170,7 @@ def Cart():
 
     ProductName = ['']
     for i in range(len(ProductID)):
-        sql = "SELECT P_Name FROM product WHERE P_ID = %s"
+        sql = "SELECT P_Name FROM product WHERE P_ID = %s" # use the product ID to find the product's name
         val = ProductID[i]
         mycursor.execute(sql, val)
         myresult = mycursor.fetchone()
@@ -175,18 +180,18 @@ def Cart():
     EmptyMessage = ''
     CartTable = None
     ProductN_Table = None
-    if Cost == None:
+    if Cost == None: # if the cart is empty
         EmptyMessage = "You have nothing in the shopping cart!"
-    else:
-        CartTable = tabulate(cartArray, headers = ['Quantity', 'Price(HK$)'], tablefmt='html')
-        ProductN_Table = tabulate(ProductName, headers = ['Product Name'], tablefmt='html')
+    else: 
+        CartTable = tabulate(cartArray, headers = ['Quantity', 'Price(HK$)'], tablefmt='html') # bulid a HTML table for the product's number and price
+        ProductN_Table = tabulate(ProductName, headers = ['Product Name'], tablefmt='html') # bulid a HTML table for the product's name
 
     return render_template('Cart.html', name = session['username'], Cost = Cost, CartTable = CartTable, ProductN_Table = ProductN_Table, Empty = EmptyMessage)
 
 @app.route('/Clear_Cart', methods=['POST'])
-def Clear_Cart():
+def Clear_Cart(): # to let user to empty their cart
     mycursor = db.cursor()
-    sql = "DELETE FROM cart WHERE C_ID = %s"
+    sql = "DELETE FROM cart WHERE C_ID = %s" # only delete the product which add by that customer
     val = session['user_CID']
     mycursor.execute(sql, val)
     db.commit()
@@ -195,9 +200,9 @@ def Clear_Cart():
 
 
 @app.route('/Payment', methods=['GET', 'POST'])
-def Payment():
+def Payment(): # let user to pay the bill
     mycursor = db.cursor()
-    sql = "SELECT SUM(Price) FROM cart WHERE C_ID = %s"
+    sql = "SELECT SUM(Price) FROM cart WHERE C_ID = %s" # get the total cost
     val = session['user_CID']
     lock.acquire()
     mycursor.execute(sql, val)
@@ -209,12 +214,12 @@ def Payment():
         Total_Fee = row[0]
 
     if request.method == 'POST':
-        PaymentBTN = request.form['PaymentBTN']
-        if Total_Fee == None and PaymentBTN == "1":
+        PaymentBTN = request.form['PaymentBTN'] # to distinguish if user press the 'set Payment' button or 'submit' promotion code button
+        if Total_Fee == None and PaymentBTN == "1": # if user have a empty cart and pless the 'set Payment' button
             return render_template('Total_None.html', name = session['username'])
-        PM_Code_Py = request.form['PM_Code']
-        if PM_Code_Py != '' and PaymentBTN == "0":
-            sql = "SELECT PM_Discount_Value FROM promotion_list WHERE PM_CODE = %s"
+        PM_Code_Py = request.form['PM_Code'] # get the promotion code
+        if PM_Code_Py != '' and PaymentBTN == "0": # if coustomer enter something in the box and press 'submit' button
+            sql = "SELECT PM_Discount_Value FROM promotion_list WHERE PM_CODE = %s" # find if there are a code match with user's code
             val = PM_Code_Py
             lock.acquire()
             mycursor.execute(sql, val)
@@ -233,30 +238,30 @@ def Payment():
                 myresult = mycursor.fetchone()
                 if myresult:
                     session['PM_ID'] = myresult
-        elif PM_Code_Py == '' and PaymentBTN == "0":
+        elif PM_Code_Py == '' and PaymentBTN == "0": # if user didn't enter a code and still press the 'submit' button
             PM_Ture = str('Please enter the promotion code!')
-        else:
+        else: # if user didn't enter any promotion code
             PM_Ture = str('')
             session['PM_ID'] = None
-        if Total_Fee != 0 and PaymentBTN == "1":
+        if Total_Fee != 0 and PaymentBTN == "1": # if user have somrthing in his cart and press the 'set Payment' button
             return redirect('/Complete')
 
 
     return render_template('Sell.html', name = session['username'], Payment = Total_Fee, PM_Ture = PM_Ture)
 
 @app.route('/Complete')
-def Complete():
+def Complete(): # page after press the 'set Payment' button and success
     mycursor = db.cursor()
     Product_Num = None
     val = session['user_CID']
-    sql = "SELECT COUNT(C_ID) FROM cart WHERE C_ID = %s"
+    sql = "SELECT COUNT(C_ID) FROM cart WHERE C_ID = %s" # count for number of product in user's cart
     lock.acquire()
     mycursor.execute(sql, val)
     lock.release()
     myresult = mycursor.fetchone()
     Product_Num = myresult[0]
-    for x in range(Product_Num):
-        sql = "SELECT C_ID,P_ID,P_Quantity,Price FROM cart WHERE C_ID = %s"
+    for x in range(Product_Num): # enter every record into the 'order_list' table
+        sql = "SELECT C_ID,P_ID,P_Quantity,Price,Cart_ID FROM cart WHERE C_ID = %s" # get all the information of the product
         val = session['user_CID']
         lock.acquire()
         mycursor.execute(sql, val)
@@ -266,14 +271,15 @@ def Complete():
             Cart_P_ID = row[1]
             Cart_P_Quan = row[2]
             Cart_price = row[3]
-        sql = "INSERT INTO order_list (C_ID, P_ID, P_Quantity, PM_ID, Price) VALUES ( %s, %s, %s, %s, %s)"
+            Cart_ID = row[4]
+        sql = "INSERT INTO order_list (C_ID, P_ID, P_Quantity, PM_ID, Price) VALUES ( %s, %s, %s, %s, %s)" # insert them into the 'order_list' table
         val = (Cart_C_ID, Cart_P_ID, Cart_P_Quan, session['PM_ID'], Cart_price)
         lock.acquire()
         mycursor.execute(sql, val)
         lock.release()
         db.commit()
-        sql = "DELETE FROM cart WHERE C_ID=%s"
-        val = (Cart_C_ID)
+        sql = "DELETE FROM cart WHERE Cart_ID=%s" # delete the product record in the 'cart' table
+        val = (Cart_ID)
         lock.acquire()
         mycursor.execute(sql, val)
         lock.release()
@@ -282,9 +288,9 @@ def Complete():
     return render_template('Complete.html', name = session['username'])
 
 @app.route('/OrderList')
-def OrderList():
+def OrderList(): # to show the users order history
     mycursor = db.cursor()
-    sql = "SELECT P_Quantity,Price,Created_At FROM order_list WHERE C_ID = %s"
+    sql = "SELECT P_Quantity,Price,Created_At FROM order_list WHERE C_ID = %s" # get all the record from the 'order_list' table
     val = session['user_CID']
     mycursor.execute(sql, val)
     HISTArray = []
@@ -292,7 +298,7 @@ def OrderList():
     for row in mycursor:
         HISTArray.append(row)
 
-    sql = "SELECT P_ID FROM order_list WHERE C_ID = %s"
+    sql = "SELECT P_ID FROM order_list WHERE C_ID = %s" # get the product ID from the 'order_list' table
     mycursor.execute(sql, val)
     ProductID = []
     for row in mycursor:
@@ -300,28 +306,28 @@ def OrderList():
 
     ProductName = ['']
     for i in range(len(ProductID)):
-        sql = "SELECT P_Name FROM product WHERE P_ID = %s"
+        sql = "SELECT P_Name FROM product WHERE P_ID = %s" # get the product name with the product ID
         val = ProductID[i]
         mycursor.execute(sql, val)
         myresult = mycursor.fetchone()
         ProductName.append(myresult)
 
     EmptyMessage = ''
-    if row == 0:
+    if len(ProductID) == 0: # if user never order a product
         EmptyMessage = "You never buy a product from us!"
 
-    ProductN_Table = tabulate(ProductName, headers = ['Product Name'], tablefmt='html')
-    HISTTable = tabulate(HISTArray, headers = ['Quantity', 'Price(HK$)', 'Date'], tablefmt='html')
+    ProductN_Table = tabulate(ProductName, headers = ['Product Name'], tablefmt='html') # bulid a HTML table for the product name
+    HISTTable = tabulate(HISTArray, headers = ['Quantity', 'Price(HK$)', 'Date'], tablefmt='html') # bulid a HTML table for the product's number, price and order date
 
     return render_template('Order_List.html', name = session['username'], HISTTable = HISTTable, ProductN_Table = ProductN_Table, Empty = EmptyMessage)
 
 @app.route('/Logout')
-def Logout():
+def Logout(): # to logout the user
     session.pop('username',None)
     return render_template('Logout.html', name = newuser)
 
 @app.route('/Q&A')
-def QAndA():
+def QAndA(): # to redirect user the 'Q&A.html'
     return render_template('Q&A.html', name = newuser)
 
 if __name__ == '__main__':
