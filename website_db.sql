@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： localhost:3306
--- 產生時間： 2023 年 04 月 01 日 02:18
+-- 產生時間： 2023 年 04 月 07 日 12:48
 -- 伺服器版本： 8.0.32-0ubuntu0.22.04.2
 -- PHP 版本： 8.1.2-1ubuntu2.11
 
@@ -31,7 +31,8 @@ CREATE TABLE `cart` (
   `C_ID` int NOT NULL,
   `P_ID` int NOT NULL,
   `P_Quantity` smallint NOT NULL,
-  `Price` int NOT NULL
+  `Price` int NOT NULL,
+  `Cart_ID` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -133,6 +134,12 @@ INSERT INTO `promotion_list` (`PM_ID`, `PM_CODE`, `PM_Discount_Value`) VALUES
 --
 
 --
+-- 資料表索引 `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`Cart_ID`);
+
+--
 -- 資料表索引 `customers`
 --
 ALTER TABLE `customers`
@@ -168,6 +175,12 @@ ALTER TABLE `promotion_list`
 --
 -- 在傾印的資料表使用自動遞增(AUTO_INCREMENT)
 --
+
+--
+-- 使用資料表自動遞增(AUTO_INCREMENT) `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `Cart_ID` int NOT NULL AUTO_INCREMENT;
 
 --
 -- 使用資料表自動遞增(AUTO_INCREMENT) `customers`
